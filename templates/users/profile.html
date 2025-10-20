@@ -7,28 +7,37 @@
     <div class="w-full md:w-[36rem] lg:w-[50rem]">
         <div class="card p-6">
             <div class="text-center flex flex-col items-center">
-                <img class="w-36 h-36 rounded-full object-cover mb-4" src="{{ profile.avatar  }}" />
+                <img class="w-36 h-36 rounded-full object-cover mb-4" src="{{ profile.avatar }}" />
                 <!-- href="{% static 'images/logo2.png' %}" -->
                 <div class="text-center max-w-md">
                     <div class="text-center">
                         <h1 class="text-2xl font-medium text-gray-800 mb-1">
-                            {{ user.first_name }} <span class="font-medium">{{ user.last_name }}</span>
+                            {{ profile.user.first_name }} <span class="font-medium">{{ profile.user.last_name }}</span>
                         </h1>
                         <!-- <h1 id="realname">{{user.profile.realname}}</h1> -->
-                        <div class="text-gray-500 text-lg">@{{ user.username }}</div>
+                        <div class="text-gray-500 text-lg">@{{ profile.user.username }}</div>
                     </div>
          
                     </div>
-                    <!-- <div class="text-gray-400 mb-2 -mt-3">@{{ user.username }}</div> -->
+                    
+                    {% if profile.location %}
                     <div class="flex items-center justify-center mx-auto">
                         <img class="object-cover h-6 mr-1 opacity-60"
                             src="https://img.icons8.com/material-outlined/50/000000/marker.png">
-                        {{profile.location}}
+                        {{ profile.location }}
                     </div>
-                    <div class="my-8">
-                        {{profile.bio}}
-                    </div>
+                    {% endif %}
 
+                   
+                    {% if profile.bio %}
+                    <div class="my-8">
+                        {{ profile.bio }}
+                    </div>
+                    {% endif %}
+
+                    {% if profile.user != user %}
+                    <a class="button" href="{% url 'start-chat' profile.user.username %}">Send Message</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

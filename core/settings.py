@@ -121,11 +121,27 @@ ASGI_APPLICATION = 'core.asgi.application'
 
 # Channels settings for WebSocket to automatically 
 # run the daphne server and get the messages automatically
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
+# development
+
+if DEBUG:
+    # Local development: use local Redis
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer"
+        }
     }
-}
+
+else:
+# prod on railway
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                # "hosts": [("localhost", 6379)],
+                "hosts": [('redis://default:AUkgieFcUYAlhLFTsRbHuXyRKAZMlFct@redis.railway.internal:6379')],
+            },
+        },
+    }
 
 
 # Database
