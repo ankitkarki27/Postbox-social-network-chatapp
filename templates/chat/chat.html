@@ -1,57 +1,92 @@
 {% extends 'layouts/chat-layout.html' %}
 
 {% block chat_content %}
-<!-- Chat Header -->
-<div class="border-b border-gray-200 bg-white p-3">
-    <div class="flex items-center space-x-3">
+<!-- Chat Header (Fixed) -->
+<div class="bg-white border-b  top-0 right-0 left-48 z-10">
+    <div class="flex items-center p-3">
         {% if other_user %}
         <!-- Private Chat Header -->
-        <div class="relative">
-            <img class="w-8 h-8 object-cover rounded-full" src="{{ other_user.profile.avatar }}">
-            <div class="absolute bottom-0 right-0 w-2 h-2 bg-green-400 rounded-full border border-white"></div>
-        </div>
-        <div class="flex-1 min-w-0">
-            <h1 class="text-sm font-medium text-gray-800 truncate">{{ other_user.profile.name }}</h1>
-            <!-- <p class="text-xs text-gray-500 truncate">@{{ other_user.profile.username }}</p> -->
+        <div class="flex items-center">
+            <div class="relative">
+                <img class="w-8 h-8 rounded-full" src="{{ other_user.profile.avatar }}">
+                <div class="absolute bottom-0 right-0 w-1.5 h-1.5 bg-green-400 rounded-full border border-white"></div>
+            </div>
+            <div class="ml-2">
+                <div class="text-sm font-medium truncate">
+                    {% if other_user.profile.user.get_full_name %}
+                        {{ other_user.profile.user.get_full_name }}
+                    {% else %}
+                        {{ other_user.profile.displayname }}
+                    {% endif %}
+                </div>
+                <div class="text-xs text-gray-500 truncate">@{{ other_user.profile.displayname }}</div>
+            </div>
         </div>
         {% else %}
         <!-- Public Chat Header -->
-        <div class="flex items-center space-x-2 relative">
-            <div class="flex-1 min-w-0">
-                <h1 class="text-sm font-medium text-gray-800">Public Chat</h1>
-                <div class="flex items-center gap-1">
-                    <span class="text-xs text-gray-500" id="online-count">0 </span>
+        <div class="flex items-center justify-between w-full">
+            <div class="flex items-center">
+                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2v-1"></path>
+                    </svg>
+                </div>
+                <div class="ml-2">
+                    <div class="text-sm font-medium">Public Chat</div>
+                    <div class="text-xs text-gray-500">Everyone</div>
                 </div>
             </div>
+            <span id="online-count" class="text-xs font-medium">0 online</span>
         </div>
         {% endif %}
     </div>
 </div>
 
-<!-- Chat Messages -->
-<div id="chat_container" class="flex-1 overflow-y-auto bg-white">
-    <ul id="chat_messages" class="p-3 space-y-2">
+
+<div id="chat_container" class="flex-1 overflow-y-auto bg-white pt-14 pb-16">
+    <ul id="chat_messages" class="p-4">
         {% for message in chat_messages reversed %}
         {% include 'chat/chat_message.html' %}
         {% endfor %}
     </ul>
 </div>
 
-<!-- Message Input -->
-<div class="border-t border-gray-200 bg-white p-3">
+<!-- Message Input (Fixed at bottom) -->
+<div class="bg-white border-t fixed bottom-0 right-0 left-60">
     <form id="chat_message_form" method="post" class="w-full" hx-ext="ws" ws-connect="/ws/chatroom/{{ chatroom_name }}/"
-        ws-send="this.value" _="on htmx:wsAfterSend reset() me">
+        ws-send _="on htmx:wsAfterSend reset() me">
         {% csrf_token %}
-        {{ form.body }}
+        <div class="flex items-center p-3">
+            <div class="flex-1 mr-2">
+                {{ form.body }}
+            </div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-md">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+            </button>
+        </div>
     </form>
 </div>
 
 <script>
     const form = document.getElementById('chat_message_form');
+    const input = form.querySelector('input[name="body"]');
+    
     form.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            this.requestSubmit();
+            if (input.value.trim()) {
+                this.requestSubmit();
+            }
+        }
+    });
+    
+    form.addEventListener('submit', function(e) {
+        if (!input.value.trim()) {
+            e.preventDefault();
+            e.stopPropagation();
         }
     });
 
@@ -59,6 +94,9 @@
         const chatContainer = document.getElementById('chat_container');
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
+    
+    // Scroll when page loads and when new messages arrive
     scrollToBottom();
+    document.addEventListener('htmx:wsAfterMessage', scrollToBottom);
 </script>
 {% endblock %}

@@ -1,17 +1,18 @@
 <!-- chat-inbox-sidebar.html -->
 <div class="h-full flex flex-col">
     <!-- Header -->
-    <div class="p-3 border-b border-gray-200">
-        <h1 class="text-base font-medium text-gray-800">Messages</h1>
-    </div>
+    <!-- <div class="p-4 border-b border-gray-200">
+        <h1 class="text-base font-medium text-gray-800">Inbox</h1>
+    </div> -->
 
     <!-- Public Chat -->
-    <div class="p-2 border-b border-gray-100">
-        <a href="{% url 'chat' %}" 
-           class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 transition-colors {% if not other_user %}bg-blue-50 border border-blue-100{% endif %}">
+    <div class="p-2 ">
+        <a href="{% url 'chat' %}"
+            class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 transition-colors {% if not other_user %}bg-blue-50 border border-blue-100{% endif %}">
             <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                 <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2v-1"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2v-1"></path>
                 </svg>
             </div>
             <div class="flex-1 min-w-0">
@@ -25,27 +26,34 @@
     <div class="flex-1 overflow-y-auto">
         <div class="p-2">
             <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2 px-2">Private Messages</div>
-            
+
             {% for chatroom in user.chat_groups.all %}
-                {% if chatroom.is_private %}
-                    {% for member in chatroom.members.all %}
-                        {% if member != user %}
-                        <a href="{% url 'chatroom' chatroom.group_name %}" 
-                           class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 transition-colors mb-1 {% if other_user.profile.name == member.profile.name %}bg-gray-50 border border-gray-200{% endif %}">
-                            <div class="relative">
-                                <img class="w-8 h-8 object-cover rounded-full" src="{{ member.profile.avatar }}">
-                                <div class="absolute bottom-0 right-0 w-2 h-2 bg-green-400 border border-white rounded-full"></div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-sm font-medium text-gray-800 truncate">{{ member.profile.name }}</div>
-                                <div class="text-xs text-gray-500 truncate">@{{ member.profile.username }}</div>
-                            </div>
-                        </a>
+            {% if chatroom.is_private %}
+            {% for member in chatroom.members.all %}
+            {% if member != user %}
+            <a href="{% url 'chatroom' chatroom.group_name %}"
+                class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 transition-colors mb-1 {% if other_user.profile.name == member.profile.name %}bg-gray-50 border border-gray-200{% endif %}">
+                <div class="relative">
+                    <img class="w-8 h-8 object-cover rounded-full" src="{{ member.profile.avatar }}">
+                    <div class="absolute bottom-0 right-0 w-2 h-2 bg-green-400 border border-white rounded-full"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-xs font-medium text-gray-800 truncate">
+                        {% if member.profile.user.get_full_name %}
+                        {{ member.profile.user.get_full_name }}
+                        {% else %}
+                        @{{ member.profile.displayname }}
                         {% endif %}
-                    {% endfor %}
-                {% endif %}
+                    </div>
+                    <div class="text-xs text-gray-500 truncate">
+                                @{{ member.profile.displayname }}</div>
+                </div>
+            </a>
+            {% endif %}
             {% endfor %}
-            
+            {% endif %}
+            {% endfor %}
+
             {% if not user.chat_groups.all %}
             <div class="text-center py-6 text-gray-400 text-sm">
                 No conversations yet

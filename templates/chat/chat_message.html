@@ -1,30 +1,25 @@
 {% if message.author == user %}
-<li class="flex justify-end">
-    <div class="bg-blue-500 text-white rounded-2xl rounded-br-sm px-4 py-2 max-w-[80%]">
-        <p class="text-sm">{{ message.body }}</p>
-        <span class="text-xs text-blue-100 opacity-70">{{ message.created|time:"h:i A" }}</span>
+<li class="flex justify-end mb-1">
+    <div class="bg-blue-600 text-white rounded-lg px-3 py-1.5 max-w-[80%]">
+        <div class="text-sm">{{ message.body }}</div>
+        <div class="text-xs text-gray-100 opacity-60 text-right">{{ message.created|time:"h:i A" }}</div>
     </div>
 </li>
 {% else %}
-<li class="flex justify-start">
-    <div class="flex items-start space-x-2 max-w-[80%]">
+<li class="flex justify-start mb-1">
+    <div class="flex items-start max-w-[80%]">
         <a href="{% url 'userprofile' message.author.username %}" class="flex-shrink-0">
-            <img class="w-8 h-8 rounded-full object-cover" src="{{ message.author.profile.avatar }}"
+            <img class="w-6 h-6 rounded-full" src="{{ message.author.profile.avatar }}"
                  alt="{{ message.author.username }}">
         </a>
-        
-        <div>
-            <span class="text-xs text-gray-500">@{{ message.author.username|lower }}</span>
-       
-        <div class="bg-white border border-gray-200 rounded-2xl rounded-bl-sm px-4 py-2">
-            
-            <p class="text-sm text-gray-800">{{ message.body }}</p>
-            <div class="flex items-center justify-between mt-1">
-                
-              <span class="text-xs text-blue-600 text-right opacity-70">{{ message.created|time:"h:i A" }}</span>
+        <div class="ml-2">
+            <div class="text-xs text-gray-500 mb-0.5">@{{ other_user.profile.displayname |lower }}</div>
+
+            <div class="bg-gray-100 rounded-xl px-3 py-1.5">
+                <div class="text-sm">{{ message.body }}</div>
+                <div class="text-xs text-gray-400 text-right">{{ message.created|time:"h:i A" }}</div>
             </div>
         </div>
-         </div>
     </div>
 </li>
 {% endif %}

@@ -1,59 +1,83 @@
 {% load static %}
-<header x-data="{ mobilenavOpen: false }"
-    class="md:flex items-center justify-between [&>*]:px-8 bg-white h-14 text-black sticky top-0 z-40 font1">
-    <div class="flex items-center justify-between h-20">
-        <logo>
-            <a class="flex items-center gap-1" href="/">
-                <!-- Connect -->
-                <img class="w-auto h-8 mt-2" src="{% static 'images/conneqt-logo-blue.png' %}" alt="Zango Logo" />
-                
+<header x-data="{ mobilenavOpen: false }" class="bg-white border-b h-14 sticky top-0 z-40">
+    <div class="flex items-center justify-between h-full px-6">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <a href="/" class="flex items-center gap-2">
+                <img class="h-6" src="{% static 'images/logo-blue.png' %}" alt="Postbox">
+                <span class="text-lg font-medium">Postbox</span>
             </a>
-        </logo>
-        <mobileicon class="md:hidden">F
-            <a @click="mobilenavOpen = !mobilenavOpen"
-                class="h-12 w-12 flex items-center justify-center cursor-pointer hover:bg-gray-100 rounded-lg">
-                <img x-show="!mobilenavOpen" class="w-6 h-6 select-none"
-                    src="https://img.icons8.com/small/64/ffffff/menu.png" />
-                <img x-show="mobilenavOpen" x-cloak class="w-6 h-6 select-none"
-                    src="https://img.icons8.com/small/64/ffffff/delete-sign.png" />
-            </a>
-        </mobileicon>
-    </div>
-    <nav x-show="mobilenavOpen" x-cloak
-        class="md:!block bg-white text-black h-screen w-screen md:h-auto md:w-auto -mt-20 md:mt-0 absolute md:relative z-[-1]"
-        x-transition:enter="duration-300 ease-out" x-transition:enter-start="opacity-0 -translate-y-96"
-        x-transition:enter-end="opacity-100 translate-y-0">
-        <ul class="flex items-center navitems flex-col md:flex-row gap-8 md:gap-0 justify-center h-full -translate-y-10 md:translate-y-0">
-           {% if user.is_authenticated  %}
-            <li class="text-base"><a href="/">Home</a></li>
-            <li class="text-base"><a href="{% url 'chat' %}">Chat</a></li>
-            <li><a href="{% url 'post-create' %}">Create Post</a></li>
-            <li x-data="{ dropdownOpen: false }" class="relative">
-                <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false"
-                    class="cursor-pointer select-none">
-                    <img class="h-8 w-8 rounded-full object-cover"
-                        id="avatar" src="{{ user.profile.avatar }}" alt="profile pic">
-                    {{ user.first_name }}
+        </div>
 
-                    <img x-bind:class="dropdownOpen && 'rotate-180 duration-300'" class="w-4"
-                        src="https://img.icons8.com/small/32/777777/expand-arrow.png" />
-                </a>
-                <div x-show="dropdownOpen" x-cloak
-                    class="absolute right-0 bg-white text-black shadow rounded-lg w-40 p-2 z-20"
-                    x-transition:enter="duration-300 ease-out"
-                    x-transition:enter-start="opacity-0 -translate-y-5 scale-90"
-                    x-transition:enter-end="opacity-100 translate-y-0 scale-100">
-                    <ul class="hoverlist [&>li>a]:justify-end">
-                        <li><a href="{% url 'profile' %}">My Profile</a></li>
-                        <li><a href="{% url 'profile-edit' %}">Edit Profile</a></li>
-                        <li><a href="{% url 'account_logout' %}">Log Out</a></li>
-                    </ul>
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center gap-6">
+            {% if user.is_authenticated %}
+            <a href="/" class="text-sm hover:text-blue-500">Home</a>
+            <a href="{% url 'chat' %}" class="text-sm hover:text-blue-500">Chat</a>
+            <a href="{% url 'post-create' %}" class="text-sm hover:text-blue-500">Create</a>
+
+            <!-- User Dropdown -->
+            <div x-data="{ dropdownOpen: false }" class="relative">
+                <button @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false"
+                    class="flex items-center gap-2 bg-white hover:bg-gray-100 px-3 py-1.5 rounded-lg transition-colors ">
+                    <img class="h-6 w-6 rounded-full" src="{{ user.profile.avatar }}" alt="Profile">
+                    <span class="text-sm text-black">{{ user.get_full_name|default:user.username }}</span>
+                    <svg class="w-4 h-4 text-gray-900" :class="dropdownOpen ? 'rotate-180' : ''" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <div x-show="dropdownOpen" x-cloak x-transition
+                    class="absolute right-0 mt-2 bg-white border rounded-lg shadow-lg w-40 py-1">
+                    <a href="{% url 'profile' %}" class="block px-4 py-2 text-sm hover:bg-gray-50">Profile</a>
+                    <a href="{% url 'profile-edit' %}" class="block px-4 py-2 text-sm hover:bg-gray-50">Settings</a>
+                    <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm hover:bg-gray-50">Logout</a>
                 </div>
-            </li>
+            </div>
             {% else %}
-            <li><a href="{% url 'account_login' %}">Login</a></li>
-            <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+            <a href="{% url 'account_login' %}" class="text-sm hover:text-blue-500">Login</a>
+            <a href="{% url 'account_signup' %}"
+                class="bg-blue-500 text-white px-4 py-1.5 text-sm rounded-md hover:bg-blue-600">
+                Sign Up
+            </a>
             {% endif %}
-        </ul>
-    </nav>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button @click="mobilenavOpen = !mobilenavOpen" class="md:hidden">
+            <svg x-show="!mobilenavOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg x-show="mobilenavOpen" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div x-show="mobilenavOpen" x-cloak x-transition class="md:hidden border-t bg-white">
+        <div class="px-6 py-4">
+            {% if user.is_authenticated %}
+            <div class="flex items-center gap-3 mb-4 pb-4 border-b">
+                <img class="h-9 w-9 rounded-full" src="{{ user.profile.avatar }}" alt="Profile">
+                <div>
+                    <div class="font-medium">{{ user.get_full_name|default:user.username }}</div>
+                    <div class="text-sm text-gray-500">@{{ user.username }}</div>
+                </div>
+            </div>
+            <a href="/" class="block py-2 text-sm hover:text-blue-500">Home</a>
+            <a href="{% url 'chat' %}" class="block py-2 text-sm hover:text-blue-500">Chat</a>
+            <a href="{% url 'post-create' %}" class="block py-2 text-sm hover:text-blue-500">Create Post</a>
+            <div class="border-t mt-3 pt-3">
+                <a href="{% url 'profile' %}" class="block py-2 text-sm hover:text-blue-500">My Profile</a>
+                <a href="{% url 'profile-edit' %}" class="block py-2 text-sm hover:text-blue-500">Edit Profile</a>
+                <a href="{% url 'account_logout' %}" class="block py-2 text-sm hover:text-blue-500">Log Out</a>
+            </div>
+            {% else %}
+            <a href="{% url 'account_login' %}" class="block py-3 text-sm hover:text-blue-500">Login</a>
+            <a href="{% url 'account_signup' %}" class="block py-3 text-sm hover:text-blue-500">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
 </header>
