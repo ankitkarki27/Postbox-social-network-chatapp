@@ -3,13 +3,21 @@
     <!-- User Profile Section -->
     <div class="p-6 border-b border-gray-200">
         <div class="flex items-center gap-2">
+            {% if user.is_authenticated %}
             <img class="w-12 h-12 object-cover border rounded-full border-gray-300" src="{{ user.profile.avatar}}"
                 alt="{{ user.username }}" />
+            {% else %}
+            <img class="w-12 h-12 object-cover border rounded-full border-gray-300"
+                src="{% static 'images/panda.png' %}" alt="None" />
+            {% endif %}
+
             <div class="flex-1 min-w-0">
-                <h2 class="text-sm font-semibold text-gray-900 truncate">
-                    {{ user.first_name }} {{ user.last_name }}
-                </h2>
-                <p class="text-xs text-gray-700">@{{ user.profile.displayname }}</p>
+                <div class="text-sm font-semibold text-gray-900 truncate">
+                    {{ user.get_full_name|default:"Postbox" }}
+                </div>
+                <div class="text-xs text-gray-700">
+                    @{{ user.username|default:"postbox" }}
+                </div>
             </div>
         </div>
     </div>
@@ -68,44 +76,11 @@
                     class="flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                    </svg>
-                    <span class="text-sm font-medium">Bookmarks</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{% url 'profile' %}"
-                    class="flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                     <span class="text-sm font-medium">Profile</span>
                 </a>
             </li>
-
-            <!-- <li>
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    <span class="text-sm font-medium">Friends</span>
-                </a>
-            </li> -->
-
-            <!-- <li>
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
-                    <span class="text-sm font-medium">Communities</span>
-                </a>
-            </li> -->
 
             <li class="pt-2 border-t border-gray-200 mt-2">
                 <a href="#"
@@ -123,32 +98,29 @@
     </nav>
 
     <!-- Create Post Button -->
-<div class="p-4 border-t border-gray-200">
-    <a href="{% url 'post-create' %}" 
-       class="block w-full text-center py-2.5 px-4 text-sm rounded-lg font-medium text-white hover:[background-color:#3b35cc] transition-colors" 
-       style="background-color: #4f42ff;">
-        Create Post
-    </a>
-</div>
+    <div class="p-4 border-t border-gray-200">
+        <a href="{% url 'post-create' %}"
+            class="block w-full text-center py-2.5 px-4 text-sm rounded-lg font-medium text-white hover:[background-color:#3b35cc] transition-colors"
+            style="background-color: #4f42ff;">
+            Create Post
+        </a>
+    </div>
 
-
-
-
-<!-- User Stats Footer -->
-<div class="px-4 pb-4">
-    <div class="grid grid-cols-3 gap-2 text-center py-3 border-t border-gray-200">
-        <div>
-            <div class="text-sm font-semibold text-gray-900">247</div>
-            <div class="text-xs text-gray-500">Posts</div>
-        </div>
-        <div>
-            <div class="text-sm font-semibold text-gray-900">1.2K</div>
-            <div class="text-xs text-gray-500">Followers</div>
-        </div>
-        <div>
-            <div class="text-sm font-semibold text-gray-900">892</div>
-            <div class="text-xs text-gray-500">Following</div>
+    <!-- User Stats Footer -->
+    <div class="px-4 pb-4">
+        <div class="grid grid-cols-3 gap-2 text-center py-3 border-t border-gray-200">
+            <div>
+                <div class="text-sm font-semibold text-gray-900">247</div>
+                <div class="text-xs text-gray-500">Posts</div>
+            </div>
+            <div>
+                <div class="text-sm font-semibold text-gray-900">1.2K</div>
+                <div class="text-xs text-gray-500">Followers</div>
+            </div>
+            <div>
+                <div class="text-sm font-semibold text-gray-900">892</div>
+                <div class="text-xs text-gray-500">Following</div>
+            </div>
         </div>
     </div>
-</div>
 </div>

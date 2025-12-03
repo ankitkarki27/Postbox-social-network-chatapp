@@ -39,6 +39,7 @@
 
                     {% if profile.user != user %}
                     <a class="button" href="{% url 'start-chat' profile.user.username %}">Send Message</a>
+                    <a href="{% url 'profile-edit' %}" class="text-sm">Edit Profile</a>
                     {% endif %}
                 </div>
             </div>
