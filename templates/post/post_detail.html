@@ -11,7 +11,7 @@
 <div class="space-y-6">
     <!-- Comment form -->
     
-    <div class="border border-gray-100 rounded-lg p-4 bg-white">
+    <div class="px-2">
         <form method="POST" action="{% url 'comment-sent' post.id %}" class="flex items-center" autocomplete="off">
             {% csrf_token %}
           {{ commentForm }}
@@ -19,17 +19,8 @@
         </form>
     </div>
 
-    <!-- Comments tabs -->
-     {% if post.comments.count > 0  %}
-    <div id="tabs" class="flex gap-2 mb-2">
-        <a class="tab selected">Newest First</a> 
-        <a class="tab">Top Comments</a>
-    </div>
-    {% endif %}
-    
-
     <!-- Comments list -->
-    <div class="space-y-4">
+    <div class="space-y-2">
          {% for comment in post.comments.all %}
             {% include 'post/post_comment.html' %}
         {% endfor %}  

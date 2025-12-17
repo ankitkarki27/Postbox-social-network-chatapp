@@ -1,44 +1,60 @@
 {% load static %}
 <header x-data="{ mobilenavOpen: false }" class="max-w-3xl mx-auto h-14 sticky bg-white top-0 z-40">
     <div class="flex items-center justify-between h-full px-6">
-        <!-- Logo -->
+
         <a href="/" class="flex items-center gap-2">
-            <img class="h-6" src="{% static 'images/logo-blue.png' %}" alt="Postbox">
-            <!-- <span class="text-lg font-medium">Postbox</span> -->
+            <img class="h-8" src="{% static 'images/logo-pb.png' %}" alt="Postbox">
         </a>
 
-        <!-- Desktop Navigation -->
-        <nav class="hidden md:flex items-center gap-6">
+        <nav class="hidden md:flex items-center gap-4">
+            
+            <a href="https://github.com/ankitkarki27/postbox"
+                class="text-xl text-gray-900 hover:text-gray-800 transition">
+                <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="#"
+                class="text-sm text-gray-900 hover:text-gray-800 transition">
+                </i> My Community
+            </a>
+
             {% if user.is_authenticated %}
-                <!-- <a href="/" class="text-sm text-gray-700 hover:text-blue-500 transition">Home</a> -->
-                <!-- <a href="{% url 'chat' %}" class="text-sm text-gray-700 hover:text-blue-500 transition">Chat</a> -->
-                <a href="{% url 'post-create' %}" class="text-sm text-gray-700 hover:text-blue-500 transition">Create Post</a>
+            <a href="{% url 'post-create' %}"
+                class="text-sm text-white px-4 py-1.5 rounded-lg bg-[#1d9bf0] hover:bg-[#1d9bf0]/90 transition">
+                <i class="fa-solid fa-plus mr-2"></i>Create Post
+            </a>
 
-                <!-- User Dropdown -->
-                <div x-data="{ dropdownOpen: false }" class="relative">
-                    <button @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false"
-                        class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white hover:bg-gray-100 transition">
-                        <img class="h-6 w-6 rounded-full" src="{{ user.profile.avatar }}" alt="Profile">
-                        <span class="text-sm text-gray-900">{{ user.get_full_name|default:user.username }}</span>
-                        <svg class="w-4 h-4 text-gray-900 transform transition-transform" :class="dropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
+            <div x-data="{ dropdownOpen: false }" class="relative">
+                <button @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false"
+                    class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white hover:bg-gray-100 transition">
+                    <img class="h-6 w-6 rounded-full" src="{{ user.profile.avatar }}" alt="Profile">
+                    <span class="text-sm text-gray-900">{{ user.get_full_name|default:user.username }}</span>
+                    <svg class="w-4 h-4 text-gray-900 transform transition-transform"
+                        :class="dropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
 
-                    <div x-show="dropdownOpen" x-cloak x-transition
-                        class="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg py-1">
-                        <a href="{% url 'profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profile</a>
-                        <a href="{% url 'profile-edit' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
-                        <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</a>
-                    </div>
+                <div x-show="dropdownOpen" x-cloak x-transition
+                    class="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg py-1">
+                    <a href="{% url 'profile' %}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profile</a>
+                    <a href="{% url 'profile-edit' %}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
+                    <a href="{% url 'account_logout' %}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</a>
                 </div>
+            </div>
+
             {% else %}
-                <a href="{% url 'account_login' %}" class="text-sm text-gray-700 hover:text-blue-500 transition">Login</a>
-                <a href="{% url 'account_signup' %}" class="text-sm bg-blue-500 text-white px-4 py-1.5 rounded-md hover:bg-blue-600 transition">Sign Up</a>
+            <a href="{% url 'account_signup' %}"
+                class="text-sm text-white px-4 py-1.5 rounded-lg bg-[#1d9bf0] hover:bg-[#1d9bf0]/90 transition">
+                <i class="fa-solid fa-plus mr-2"></i>Create Post
+            </a>
+
             {% endif %}
         </nav>
 
-        <!-- Mobile Menu Button -->
         <button @click="mobilenavOpen = !mobilenavOpen" class="md:hidden focus:outline-none">
             <svg x-show="!mobilenavOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -49,28 +65,38 @@
         </button>
     </div>
 
-    <!-- Mobile Navigation -->
     <div x-show="mobilenavOpen" x-cloak x-transition class="md:hidden border-t bg-white">
         <div class="px-6 py-4 space-y-4">
             {% if user.is_authenticated %}
-                <div class="flex items-center gap-3 pb-4 border-b">
-                    <img class="h-10 w-10 rounded-full" src="{{ user.profile.avatar }}" alt="Profile">
-                    <div>
-                        <div class="font-medium text-gray-900">{{ user.get_full_name|default:user.username }}</div>
-                        <div class="text-sm text-gray-500">@{{ user.username }}</div>
-                    </div>
+            <div class="flex items-center gap-3 pb-4 border-b">
+                <img class="h-10 w-10 rounded-full" src="{{ user.profile.avatar }}" alt="Profile">
+                <div>
+                    <div class="font-medium text-gray-900">{{ user.get_full_name|default:user.username }}</div>
+                    <div class="text-sm text-gray-500">@{{ user.username }}</div>
                 </div>
-                <a href="/" class="block py-2 text-sm text-gray-700 hover:text-blue-500 transition">Home</a>
-                <a href="{% url 'chat' %}" class="block py-2 text-sm text-gray-700 hover:text-blue-500 transition">Chat</a>
-                <a href="{% url 'post-create' %}" class="block py-2 text-sm text-gray-700 hover:text-blue-500 transition">Create Post</a>
-                <div class="border-t pt-3 space-y-1">
-                    <a href="{% url 'profile' %}" class="block py-2 text-sm text-gray-700 hover:text-blue-500 transition">My Profile</a>
-                    <a href="{% url 'profile-edit' %}" class="block py-2 text-sm text-gray-700 hover:text-blue-500 transition">Edit Profile</a>
-                    <a href="{% url 'account_logout' %}" class="block py-2 text-sm text-gray-700 hover:text-blue-500 transition">Log Out</a>
-                </div>
+            </div>
+
+            <a href="https://github.com/ankitkarki27/postbox"
+                class="block py-2 text-sm text-gray-700 hover:text-blue-500 transition">
+                GitHub
+            </a>
+
+            <a href="{% url 'post-create' %}" class="block py-2 text-sm bg-[#1d9bf0] hover:bg-[#1d9bf0]/90 text-gray-700 transition">
+                Create Post
+            </a>
+
+            <a href="{% url 'profile' %}"
+                class="block py-2 text-sm text-gray-700 hover:text-blue-500 transition">Profile</a>
+            <a href="{% url 'profile-edit' %}"
+                class="block py-2 text-sm text-gray-700 hover:text-blue-500 transition">Settings</a>
+            <a href="{% url 'account_logout' %}"
+                class="block py-2 text-sm text-gray-700 hover:text-blue-500 transition">Logout</a>
+
             {% else %}
-                <a href="{% url 'account_login' %}" class="block py-3 text-sm text-gray-700 hover:text-blue-500 transition">Login</a>
-                <a href="{% url 'account_signup' %}" class="block py-3 text-sm text-gray-700 hover:text-blue-500 transition">Sign Up</a>
+            <a href="{% url 'account_signup' %}"
+                class="block py-3 text-sm text-gray-700 hover:text-blue-500 transition">Create Post</a>
+            <a href="{% url 'account_login' %}"
+                class="block py-3 text-sm text-gray-700 hover:text-blue-500 transition">Login</a>
             {% endif %}
         </div>
     </div>

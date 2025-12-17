@@ -20,11 +20,11 @@
         {{ form.as_p }}
 
         <!-- Buttons -->
-        <div class="flex items-center gap-3 mt-4">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-full transition-colors">
+        <div class="flex items-center gap-2 mt-4">
+            <button type="submit" class="text-white font-medium px-4 py-2 rounded-base transition-colors">
                 Post
             </button>
-            <a href="{{ request.META.HTTP_REFERER }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-5 py-2 rounded-full transition-colors">
+            <a href="{{ request.META.HTTP_REFERER }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-5 py-2 rounded-lg transition-colors">
                 Cancel
             </a>
         </div>

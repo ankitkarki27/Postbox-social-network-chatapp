@@ -9,9 +9,10 @@
             <div class="flex">
                 <div class="flex  flex-row items-center gap-1">
                     <a href="{% url 'userprofile' post.author.username %}" class="text-sm font-semibold text-gray-900 hover:underline">
-                        {{ post.author.profile.name|default:post.author.username }}
+                        {{ post.author.profile.user.get_full_name }}
+                              <!-- {{ profile.user.get_full_name }} -->
                     </a>
-                    <span class="text-xs text-gray-400">@{{ post.author.username }} • {{ post.created_at|timesince }} ago</span>
+                    <span class="text-xs text-gray-400">@{{ post.author.profile.user.username }} • {{ post.created_at|timesince }} ago</span>
                 </div>
             </div>
             {% else %}
